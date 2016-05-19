@@ -304,7 +304,7 @@ else
     VERBOSITY=vv
 fi
 
-ansible-playbook -$VERBOSITY $OOOQ_DIR/playbooks/quickstart.yml \
+cmd="ansible-playbook -$VERBOSITY $OOOQ_DIR/playbooks/quickstart.yml \
     -e @$OPT_CONFIG \
     -e ansible_python_interpreter=/usr/bin/python \
     -e @$OOOQ_DIR/config/release/$RELEASE.yml \
@@ -312,7 +312,10 @@ ansible-playbook -$VERBOSITY $OOOQ_DIR/playbooks/quickstart.yml \
     -e virthost=$VIRTHOST \
     ${OPT_VARS[@]} \
     ${OPT_TAGS:+-t $OPT_TAGS} \
-    ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS}
+    ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS}"
+echo $cmd
+exit
+$cmd
 
 # We only print out further usage instructions when using the default
 # tags, since this is for new users (and not even applicable to some tags).

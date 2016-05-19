@@ -11,3 +11,4 @@
   environment:
     LIBGUESTFS_BACKEND: direct
     LIBVIRT_DEFAULT_URI: "{{ libvirt_uri }}"
+  when: inject_repo is defined
