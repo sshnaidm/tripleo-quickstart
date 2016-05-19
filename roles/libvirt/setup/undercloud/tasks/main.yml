@@ -28,6 +28,9 @@
 - include: fetch_image.yml
   when: undercloud_vol_check|failed
 
+- include: inject_delorean_repo.yml
+  when: delorean_path is defined
+
 - include: inject_gating_repo.yml
   when: compressed_gating_repo is defined
 

@@ -1,0 +1,15 @@
+#!/bin/bash
+TOBEREMOVED=$(yumdb search from_repo delorean delorean-current delorean-ci | grep -v -e from_repo -e "Loaded plugins" || true)
+[ "$TOBEREMOVED" != "" ] &&  yum remove -y $TOBEREMOVED
+yum clean all
+
+cat > /etc/yum.repos.d/delorean.repo << EOF
+[delorean]
+name=delorean
+baseurl=http://trunk.rdoproject.org/centos7/{{ delorean_path }}
+enabled=1
+gpgcheck=0
+EOF
+
+yum update -y
+yum install -y $TOBEREMOVED

@@ -1,0 +1,13 @@
+---
+- name: Create the delorean injection script
+  template:
+    src: inject_delorean_repo.sh.j2
+    dest: "{{ working_dir }}/inject_delorean_repo.sh"
+
+- name: Inject the gating repo
+  command: >
+    virt-customize -a {{ working_dir }}/undercloud.qcow2
+    --run '{{ working_dir }}/inject_delorean_repo.sh'
+  environment:
+    LIBGUESTFS_BACKEND: direct
+    LIBVIRT_DEFAULT_URI: "{{ libvirt_uri }}"
