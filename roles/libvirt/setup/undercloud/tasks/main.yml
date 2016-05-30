@@ -28,9 +28,6 @@
 - include: fetch_image.yml
   when: undercloud_vol_check|failed
 
-- include: inject_delorean_repo.yml
-  when: delorean_path is defined
-
 - include: inject_gating_repo.yml
   when: compressed_gating_repo is defined
 
@@ -186,11 +183,13 @@
   template:
     src: repoclean.sh.j2
     dest: "/tmp/repoclean.sh"
+  when: delorean_path is defined
 
 - name: Repo fix for delorean
   delegate_to: undercloud
   shell: /bin/bash /tmp/repoclean.sh 2>&1 | tee /tmp/log
   become: true
+  when: delorean_path is defined
 
 # Ironic defaults to using `qemu:///system`.  When running libvirtd
 # unprivileged we need to use `qemu:///session`.  This allows us to pass

@@ -314,7 +314,6 @@ cmd="ansible-playbook -$VERBOSITY $OOOQ_DIR/playbooks/quickstart.yml \
     ${OPT_TAGS:+-t $OPT_TAGS} \
     ${OPT_SKIP_TAGS:+--skip-tags $OPT_SKIP_TAGS}"
 echo $cmd
-exit
 $cmd
 
 # We only print out further usage instructions when using the default
