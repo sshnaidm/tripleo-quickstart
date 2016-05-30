@@ -178,19 +178,6 @@
     src: ssh.config.j2
     dest: "{{ local_working_dir }}/ssh.config.ansible"
 
-- name: Repo fix for delorean
-  delegate_to: undercloud
-  template:
-    src: repoclean.sh.j2
-    dest: "/tmp/repoclean.sh"
-  when: delorean_path is defined
-
-- name: Repo fix for delorean
-  delegate_to: undercloud
-  shell: /bin/bash /tmp/repoclean.sh 2>&1 | tee /tmp/log
-  become: true
-  when: delorean_path is defined
-
 # Ironic defaults to using `qemu:///system`.  When running libvirtd
 # unprivileged we need to use `qemu:///session`.  This allows us to pass
 # the value of libvirt_uri into /etc/ironic/ironic.conf.

@@ -88,3 +88,15 @@
     mode: "ug+rwx"
   become: true
 
+- name: Repo fix for delorean
+#  delegate_to: undercloud
+  template:
+    src: custom_repo.sh.j2
+    dest: "/tmp/custom_repo.sh"
+  when: delorean_logs_path is defined
+
+- name: Repo fix for delorean
+  delegate_to: undercloud
+  shell: /bin/bash /tmp/custom_repo.sh 2>&1 | tee /tmp/log
+  become: true
+  when: delorean_logs_path is defined

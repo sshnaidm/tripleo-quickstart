@@ -1,0 +1,18 @@
+#!/bin/sh
+
+mkdir -p /tmp/delorean_repos/
+pushd /tmp/delorean_repos/ || exit 1
+yum install -y wget
+wget {{ delorean_logs_path }}/logs/undercloud.tar.xz -O undercloud.tar.xz || {
+    echo "Can not download {{ delorean_logs_path }}/logs/undercloud.tar.xz"
+    exit 1
+    }
+
+tar -xvf undercloud.tar.xz
+mv etc/yum.repos.d/delorean* /tmp/delorean_repos/
+rm -f /tmp/delorean_repos/delorean-ci.repo
+rm -rf etc/ var/ undercloud.tar.xz
+rm -rf /etc/yum.repos.d/delorean*
+cp -r /tmp/delorean_repos/delorean* /etc/yum.repos.d/
+yum clean all
+yum makecache
