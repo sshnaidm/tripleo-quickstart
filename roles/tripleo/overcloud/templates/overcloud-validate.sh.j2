@@ -9,7 +9,7 @@ set -eux
 # after templating they variable assignments are on separate lines.
 TEST_PING={% if test_ping|bool %}1{% else %}0{% endif %}
 
-PREPARE_TEMPEST={% if prepare_tempest|bool %}1{% else %}0{% endif %}
+PREPARE_TEMPEST={% if tempest_prepare|bool %}1{% else %}0{% endif %}
 
 TEST_TEMPEST={% if test_tempest|bool %}1{% else %}0{% endif %}
 
@@ -20,7 +20,7 @@ if [ ${TEST_PING} == "1" ]; then
 
 fi
 
-if [ ${PREPARE_TEMPEST} == "1" ]; then
+if [[ ${PREPARE_TEMPEST} == "1" || ${TEST_TEMPEST} == "1" ]]; then
 {% include 'configure-tempest.sh.j2' %}
 
 fi
