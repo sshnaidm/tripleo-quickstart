@@ -1,0 +1,43 @@
+- name:  Install undercloud and deploy overcloud
+  hosts: undercloud
+  vars:
+    tripleosh_git: https://github.com/openstack/tripleo-ci.git
+  environment:
+    EPEL_MIRROR: http://dl.fedoraproject.org/pub/epel
+    CENTOS_MIRROR: http://mirror.centos.org/centos
+    FEDORA_MIRROR: http://dl.fedoraproject.org/pub/fedora/linux
+    NODECOUNT: 2
+    INTROSPECT: 1
+    PACEMAKER: 0
+    OVERCLOUD_DEPLOY_ARGS: "--libvirt-type=qemu"
+    NETISO_V4: 1
+
+  tasks:
+    - name: clone tripleosh
+      git: repo={{ tripleosh_git }} dest={{ working_dir }}/tripleo-ci force=yes
+
+    - name: Run repo setup
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --repo-setup 2>&1 | tee tripleosh.log
+
+    - name: Run undercloud setup
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | tee -a tripleosh.log
+
+    - name: Run building overcloud images
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | tee -a tripleosh.log
+
+    - name: Run nodes registering
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --register-nodes 2>&1 | tee -a tripleosh.log
+
+    - name: Run nodes introspection
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --introspect-nodes 2>&1 | tee -a tripleosh.log
+
+    - name: Run overcloud deployment
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --overcloud-deploy 2>&1 | tee -a tripleosh.log
+
+    - name: Run overcloud deployment
+      command: /usr/bin/bash {{ working_dir }}/tripleo-ci/scripts/tripleo.sh --run-tempest 2>&1 | tee -a tripleosh.log
+      ignore_errors: yes
+
+    - name: Fetch xml to host
+      fetch: src={{ working_dir }}/tempest/tempest.xml dest={{ lookup('env', 'PWD') }}/nosetests.xml flat=yes
+      ignore_errors: yes
