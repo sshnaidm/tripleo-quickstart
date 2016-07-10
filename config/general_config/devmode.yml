@@ -1,5 +1,6 @@
 devmode: true
 force_cached_images: true
+ooo_logs_path:
 images:
     - name: undercloud
       url: "{{ undercloud_image_url }}"

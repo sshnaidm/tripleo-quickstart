@@ -5,10 +5,11 @@
 # send a TERM signal after 15 minutes
 # send a KILL signal after 20 minutes
 
-timeout -s 15 -k 1200 900 bash << EOS
+timeout -s 15 -k 2000 1800 bash << EOS
     set -x
     sed -i -e "/proxy\=/d" /etc/yum.conf
 
+{% if ooo_logs_path is not defined or not ooo_logs_path %}
     yum update -y
 
     {% if "undercloud" in item.path %}
@@ -20,5 +21,21 @@ timeout -s 15 -k 1200 900 bash << EOS
     yum install -y openstack-puppet-modules
     ln -s /usr/share/openstack-puppet/modules/* /etc/puppet/modules/
     {% endif  %}
+{% else %}
+
+    yum install -y yum-utils
+    repoquery -a --installed --qf "%-20{ui_from_repo} %-30{name}" | grep "@delorean" | awk {'print \$2'} > /tmp/toremove
+    yumdb search from_repo delorean* | grep -v -e from_repo -e "Loaded plugins" -e "^$" > /tmp/installed
+    cat /tmp/toremove | xargs yum remove -y
+    yum clean all
+    cat /tmp/toremove | xargs yum install -y
+    yum update -y
+    yumdb search from_repo delorean* | grep -v -e from_repo -e "Loaded plugins" -e "^$" > /tmp/updated
+
+    {% if "undercloud" in item.path %}
+    yum install -y python-tripleoclient
+    {% endif  %}
+
+{% endif %}
 
 EOS
