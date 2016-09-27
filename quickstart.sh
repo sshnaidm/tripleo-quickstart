@@ -111,7 +111,7 @@ bootstrap () {
             git review -d "$OPT_GERRIT"
         else
             git remote update
-            git checkout --quiet origin/master
+            git checkout --quiet ovb
         fi
     fi
 
