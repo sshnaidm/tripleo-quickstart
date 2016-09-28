@@ -14,6 +14,15 @@
   roles:
     - tripleo/undercloud
 
+- name: Prepare instackenv.json
+  hosts: undercloud
+  gather_facts: no
+  tasks:
+    - name: Add profiles to instackenv.json
+      shell: |
+        sed -i '0,/capabilities": "boot/ s/"capabilities": "boot_option:local"/"capabilities": "profile:{{ item.flavor }},boot_option:local"/' ~/instackenv.json
+      with_items: overcloud_nodes
+
 - name:  copy over config files
   hosts: undercloud
   gather_facts: no
