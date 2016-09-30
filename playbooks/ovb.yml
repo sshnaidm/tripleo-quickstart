@@ -14,6 +14,30 @@
   roles:
     - tripleo/undercloud
 
+# Prepare eth2 interface
+
+
+- name: Prepare eth2 interface
+  hosts: undercloud
+  gather_facts: no
+  tasks:
+    - name: Delete /tmp/eth2.cfg file
+      file: dest=/tmp/eth2.cfg state=absent
+    - name: Create /tmp/eth2.cfg file
+      blockinfile:
+        dest: /tmp/eth2.cfg
+        content: |
+          network_config:
+            - type: interface
+              name: eth2
+              use_dhcp: false
+              addresses:
+                - ip_netmask: 10.0.0.1/24
+        create: yes
+    - name: Add eth2 interface from /tmp/eth2.cfg
+      shell: |
+        os-net-config -c /tmp/eth2.cfg -v
+      become: true
 #- name: Prepare instackenv.json
 #  hosts: undercloud
 #  gather_facts: no
