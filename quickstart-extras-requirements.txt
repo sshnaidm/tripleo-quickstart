@@ -1,1 +1,1 @@
-git+https://git.openstack.org/openstack/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras
+git+https://github.com/sshnaidm/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras
