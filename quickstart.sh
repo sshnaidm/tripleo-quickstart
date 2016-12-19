@@ -139,6 +139,7 @@ bootstrap () {
             popd
         fi
         # Handle the case that pip is too old to use a cache-dir
+        echo "$OPT_CUSTOM_REQ_PATH" > $OOOQ_BASE_REQUIREMENTS
         pip install --no-cache-dir "${OPT_REQARGS[@]}"
     popd
     )
@@ -201,12 +202,15 @@ usage () {
     echo "  -S, --skip-tags <tag1>[,<tag2>,...]"
     echo "                      only run plays and tasks whose tags do"
     echo "                      not match these values"
+    echo "  -q, --requirements-path <pip path> custom pip path for requirements,"
+    echo "                      default is: $OPT_CUSTOM_REQ_PATH"
     echo "  -l, --print-logo    print the TripleO logo and exit"
     echo "  -h, --help          print this help and exit"
 
 }
 
 OPT_REQARGS=("-r"  "$OOOQ_BASE_REQUIREMENTS")
+OPT_CUSTOM_REQ_PATH='git+https://github.com/sshnaidm/tripleo-quickstart-extras/@dlrn#egg=tripleo-quickstart-extras'
 OPT_VARS=()
 
 while [ "x$1" != "x" ]; do
@@ -223,6 +227,11 @@ while [ "x$1" != "x" ]; do
         --requirements|-r)
             OPT_REQARGS+=("-r")
             OPT_REQARGS+=("$2")
+            shift
+            ;;
+
+        --requirements-path|-q)
+            OPT_CUSTOM_REQ_PATH="$2"
             shift
             ;;
 
