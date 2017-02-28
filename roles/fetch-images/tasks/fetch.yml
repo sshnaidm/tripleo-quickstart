@@ -137,3 +137,8 @@
     list_files: yes
   when: image.type == "tar"
 
+- name: Remove image cache directory
+  file:
+    path: "{{ image_cache_dir }}"
+    state: absent
+  when: image_cache_dir_cleanup|bool
